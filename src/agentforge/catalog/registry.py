@@ -1,7 +1,38 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
 from typing import Any, Dict, List
 
 from src.agentforge.catalog.models import CatalogEntry as PydanticCatalogEntry
 from src.agentforge.catalog.conditions import evaluate_condition
+
+
+def _get_catalog():
+    """Import CATALOG with path resolution for installed package."""
+    try:
+        from file_definitions.catalog import CATALOG
+
+        return CATALOG
+    except ImportError:
+        pass
+
+    # Try to find file_definitions relative to this file
+    # registry.py is at src/agentforge/catalog/registry.py
+    # file_definitions is at AgentForge/file_definitions/
+    try:
+        registry_dir = Path(__file__).resolve().parent
+        agentforge_root = registry_dir.parent.parent.parent
+        file_defs_path = agentforge_root / "file_definitions"
+        if file_defs_path.exists():
+            sys.path.insert(0, str(agentforge_root))
+            from file_definitions.catalog import CATALOG
+
+            return CATALOG
+    except Exception:
+        pass
+
+    return []
 
 
 def get_files_to_generate(manifest: Dict[str, Any]) -> List[PydanticCatalogEntry]:
@@ -13,9 +44,8 @@ def get_files_to_generate(manifest: Dict[str, Any]) -> List[PydanticCatalogEntry
     Returns:
         List of CatalogEntry objects to generate
     """
-    try:
-        from file_definitions.catalog import CATALOG
-    except ImportError:
+    CATALOG = _get_catalog()
+    if not CATALOG:
         return []
 
     files_to_generate = []

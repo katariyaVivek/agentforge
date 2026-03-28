@@ -177,8 +177,7 @@ class Generator:
         # Get list of files being generated
         files_list = context.get("files_to_generate", [])
         files_section = "\n".join(
-            f"- {f.get('name', 'Unknown')}: {f.get('reason', 'Not specified')}"
-            for f in files_list
+            f"- {f.get('name', 'Unknown')}: {f.get('reason', 'Not specified')}" for f in files_list
         )
 
         prompt = GENERATION_PROMPT.format(
