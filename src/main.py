@@ -10,6 +10,13 @@ from src.pipeline.compressor import CompressionPipeline, CompressedDocument
 from src.pipeline.intent_parser import IntentManifestParser
 from src.pipeline.search import SearchPipeline
 
+try:
+    from src.agentforge.generation import Generator
+
+    GENERATOR_AVAILABLE = True
+except ImportError:
+    GENERATOR_AVAILABLE = False
+
 
 app = typer.Typer()
 
@@ -23,6 +30,9 @@ def generate(
     verbose: bool = typer.Option(False, "--verbose", help="Print manifest rationale"),
     no_search: bool = typer.Option(
         False, "--no-search", help="Skip Tavily search stage"
+    ),
+    output_dir: str = typer.Option(
+        "output", "--out", help="Output directory for generated files"
     ),
 ) -> None:
     parser = IntentManifestParser()
@@ -66,7 +76,28 @@ def generate(
     if verbose and no_search:
         typer.echo("Search stage skipped (--no-search)")
 
-    typer.echo(f"Pipeline complete. Context: {len(compressed_context)} documents")
+    if GENERATOR_AVAILABLE:
+        if verbose:
+            typer.echo("Running generation layer...")
+
+        gen = Generator(output_dir=output_dir)
+        manifest_dict = manifest.model_dump()
+        context_list = (
+            [doc.model_dump() for doc in compressed_context]
+            if compressed_context
+            else []
+        )
+        generated_files = gen.generate(manifest_dict, context_list)
+
+        if verbose:
+            typer.echo(f"Generated {len(generated_files)} files:")
+            for name in generated_files:
+                typer.echo(f"  - {name}")
+
+        typer.echo(f"Pipeline complete. Output: {output_dir}/")
+    else:
+        typer.echo(f"Pipeline complete. Context: {len(compressed_context)} documents")
+        typer.echo("Note: Generation not available (install langchain packages)")
 
 
 def main() -> None:

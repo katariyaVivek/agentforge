@@ -1,0 +1,38 @@
+# Project Structure
+
+```
+{{ project_name }}/
+{% if project_type == 'cli' %}
+├── src/
+│   └── {{ project_name|replace(' ', '_')|lower }}/
+│       ├── __init__.py
+│       └── main.py
+├── tests/
+│   └── test_main.py
+├── pyproject.toml
+└── README.md
+{% elif project_type == 'web_app' %}
+├── src/
+│   ├── pages/
+│   ├── components/
+│   └── utils/
+├── public/
+├── tests/
+├── package.json
+└── README.md
+{% else %}
+├── src/
+├── tests/
+├── pyproject.toml
+└── README.md
+{% endif %}
+```
+
+## Directory Purpose
+
+| Directory | Purpose |
+|-----------|---------|
+| src/ | Source code |
+| tests/ | Test files |
+| docs/ | Documentation |
+| config/ | Configuration files |

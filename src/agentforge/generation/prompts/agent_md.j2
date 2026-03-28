@@ -1,0 +1,37 @@
+# {{ filename }}
+
+## Project Overview
+
+- **Project Type:** {{ project_type }}
+- **Domain:** {{ domain }}
+- **Scale:** {{ scale }}
+
+{% if stack_hints %}
+## Technology Stack
+
+{% for hint in stack_hints %}
+- {{ hint }}
+{% endfor %}
+{% endif %}
+
+## Goals
+
+{% if goals %}
+{% for goal in goals %}
+- {{ goal }}
+{% endfor %}
+{% else %}
+- [To be defined based on project requirements]
+{% endif %}
+
+## Target Users
+
+[Describe who this project is for]
+
+## Constraints
+
+- [List any known constraints]
+
+## Non-Goals
+
+- [What this project will NOT do]
