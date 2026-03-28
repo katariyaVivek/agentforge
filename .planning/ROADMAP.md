@@ -1,60 +1,58 @@
+# Roadmap: AgentForge
+
+## Milestones
+
+- ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-03-28)
+- 🚧 **v1.1 Real AI** — Phases 5-8 (in progress)
+
 ## Phases
 
-- [ ] **Phase 1: Intent Parsing & Dynamic Manifest** - Derive a structured file manifest and rationale from a freeform prompt
-- [ ] **Phase 2: Search Integration & Compression** - Ground manifest items in search results and compress context for generation
-- [ ] **Phase 3: Generation & File Catalog** - Generate files per catalog rules with resilient model fallback
-- [ ] **Phase 4: CLI Integration & Output Management** - Provide end-to-end CLI workflow with flags and error handling
-
-## Phase Details
-
-### Phase 1: Intent Parsing & Dynamic Manifest
-**Goal**: Users can derive and review a structured file manifest with rationale from a single freeform prompt
-**Depends on**: Nothing
-**Requirements**: PIPE-01
+### Phase 5: Intent Parser LLM
+**Goal**: Replace test-mode intent parser with real Gemini LLM that parses actual prompts
+**Depends on**: v1.0
+**Requirements**: AI-01
 **Success Criteria** (what must be TRUE):
-  1. CLI parser correctly extracts project type, domain, and scale from user input
-  2. Pipeline outputs a structured file manifest with rationale for each choice
-  3. Pipeline supports manifest dry-run, showing file list and rationale without generating files
-**Plans**: TBD
+1. Intent parser calls actual Gemini API with prompt
+2. Returns structured IntentManifest with project_type, domain, scale, files_to_generate
+3. Handles API errors gracefully with user-friendly messages
 
-### Phase 2: Search Integration & Compression
-**Goal**: Users can ground manifest items in vetted best-practice content and receive concise summaries for generation
-**Depends on**: Phase 1
-**Requirements**: PIPE-02, PIPE-03
+### Phase 6: Search Integration
+**Goal**: Wire up real Tavily search API for web research
+**Depends on**: Phase 5
+**Requirements**: AI-02
 **Success Criteria** (what must be TRUE):
-  1. Search layer issues targeted Tavily queries for each manifest item
-  2. `--no-search` flag bypasses search stage without errors
-  3. Compression stage summarizes retrieved sources to around 400 words per document
-  4. Compression output retains version and flag metadata whitelists
-**Plans**: TBD
+1. TavilyClient.search() called with manifest-derived queries
+2. Returns SearchResult objects with title, url, content
+3. Handles missing API key gracefully
 
-### Phase 3: Generation & File Catalog
-**Goal**: Users can generate all required files via a central catalog registry with resilient model fallback
-**Depends on**: Phase 2
-**Requirements**: GEN-01, CAT-01, CAT-02, REL-01
+### Phase 7: Generator LLM
+**Goal**: Connect actual LLM generation for file content
+**Depends on**: Phase 6
+**Requirements**: AI-03
 **Success Criteria** (what must be TRUE):
-  1. Core files (AGENT.md, RULES.md, STRUCTURE.md) appear in `output/<project-slug>/` in Markdown format
-  2. Additional files appear only when catalog conditions signal they are needed
-  3. File catalog registry drives per-file generation using compressed context and manifest metadata
-  4. Model fallback circuit seamlessly falls back from Gemini to Groq to OpenRouter while preserving consistent formatting
-**Plans**: TBD
+1. Generator calls LLM with Jinja2 template + context
+2. Returns generated file content strings
+3. Writes to output/<project-slug>/ directory
 
-### Phase 4: CLI Integration & Output Management
-**Goal**: Users can run the full pipeline via CLI with configurable flags, clear logging, and graceful error handling
-**Depends on**: Phase 3
-**Requirements**: CLI-01, CLI-02, CLI-03
+### Phase 8: Fallback Chain
+**Implement**: Model fallback chain (Gemini → Groq → OpenRouter)
+**Depends on**: Phase 7
+**Requirements**: AI-04
 **Success Criteria** (what must be TRUE):
-  1. `agentforge generate <description>` supports `--out`, `--verbose`, `--dry-run`, and `--no-search` flags
-  2. `--verbose` output includes detailed manifest reasoning without silent failures
-  3. Logging and exit codes clearly reflect success, errors, and preview modes with user-friendly messages
-  4. Pipeline handles failures in search, model, and I/O layers gracefully, surfacing actionable error messages without crashing
-**Plans**: TBD
+1. Primary model tried first (Gemini)
+2. On failure, fallback to Groq
+3. On Groq failure, fallback to OpenRouter
+4. Unified prompt ensures consistent output format
 
-## Progress Table
+## Progress
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Intent Parsing & Dynamic Manifest | 0/3 | Not started | - |
-| 2. Search Integration & Compression | 0/4 | Not started | - |
-| 3. Generation & File Catalog | 0/4 | Not started | - |
-| 4. CLI Integration & Output Management | 0/4 | Not started | - |
+| Phase             | Milestone | Plans Complete | Status      | Completed  |
+| ----------------- | --------- | -------------- | ----------- | ---------- |
+| 1. Intent Parsing | v1.0      | 1/1            | Complete    | 2026-03-28 |
+| 2. Search         | v1.0      | 1/1            | Complete    | 2026-03-28 |
+| 3. Generation     | v1.0      | 1/1            | Complete    | 2026-03-28 |
+| 4. CLI Polish     | v1.0      | 1/1            | Complete    | 2026-03-28 |
+| 5. Intent LLM     | v1.1      | 0/1            | Not started | -          |
+| 6. Search API     | v1.1      | 0/1            | Not started | -          |
+| 7. Generator LLM | v1.1      | 0/1            | Not started | -          |
+| 8. Fallback Chain | v1.1      | 0/1            | Not started | -          |
