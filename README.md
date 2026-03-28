@@ -60,6 +60,7 @@ Groq → Jinja2 Templates → Keyword-based fallback
 
 ## Quick Start
 
+### Option 1: Direct Python
 ```bash
 # 1. Clone
 git clone https://github.com/katariyaVivek/agentforge.git
@@ -71,6 +72,19 @@ cp .env.example .env
 
 # 3. Run
 python agentforge.py "a twitter clone for developers"
+```
+
+### Option 2: Global CLI (Recommended)
+```bash
+# 1. Install globally
+pip install -e .
+
+# 2. Setup environment
+cp .env.example .env
+# Edit .env with your API keys
+
+# 3. Run from anywhere
+agentforge "a twitter clone for developers"
 ```
 
 ### Get Your Free API Keys
@@ -86,19 +100,22 @@ python agentforge.py "a twitter clone for developers"
 
 ```bash
 # Basic usage
+agentforge "your project idea"
+
+# Or with python (if not installed globally)
 python agentforge.py "your project idea"
 
 # Preview which files would be generated (no writing)
-python agentforge.py "..." --dry-run
+agentforge "..." --dry-run
 
 # See detailed pipeline steps
-python agentforge.py "..." --verbose
+agentforge "..." --verbose
 
 # Skip web search (faster, lower quality)
-python agentforge.py "..." --no-search
+agentforge "..." --no-search
 
 # Custom output directory
-python agentforge.py "..." --out ./my-output
+agentforge "..." --out ./my-output
 ```
 
 ---
