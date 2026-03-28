@@ -1,0 +1,38 @@
+# Payments & Billing
+
+## Overview
+
+Payment integration for subscription billing.
+
+## Supported Payment Providers
+
+- [ ] Stripe (primary)
+- [ ] Paddle
+- [ ] PayPal
+
+## Pricing Plans
+
+| Plan | Price | Features |
+|------|-------|----------|
+| Free | $0/mo | Basic features |
+| Pro | $29/mo | All features |
+| Enterprise | $99/mo | Custom support |
+
+## Subscription Tiers
+
+- Free tier: Limited usage
+- Pro tier: Unlimited
+- Enterprise: Custom limits
+
+## Webhooks
+
+Configure webhooks for:
+
+- `invoice.paid` - Payment successful
+- `invoice.payment_failed` - Payment failed
+- `customer.subscription.updated` - Plan changed
+
+## Refund Policy
+
+- Full refund within 30 days
+- No refund after 30 days

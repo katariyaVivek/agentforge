@@ -1,0 +1,31 @@
+# Authentication & Authorization
+
+## Overview
+
+This document outlines the authentication and authorization strategy for the project.
+
+## Authentication Methods
+
+- [ ] Email/Password
+- [ ] OAuth (Google, GitHub, etc.)
+- [ ] Magic Links
+- [ ] SSO/SAML
+
+## User Roles
+
+| Role | Description | Permissions |
+|------|-------------|-------------|
+| admin | Full access | All |
+| user | Standard user | Read, Write own |
+| guest | Limited access | Read only |
+
+## Session Management
+
+- JWT tokens with refresh mechanism
+- Session timeout: 30 days
+- Secure cookie storage
+
+## Password Requirements
+
+- Minimum 8 characters
+- Hash: bcrypt/argon2

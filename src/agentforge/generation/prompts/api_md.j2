@@ -1,0 +1,55 @@
+# API Documentation
+
+## Overview
+
+REST API endpoints for the application.
+
+## Base URL
+
+```
+{{ if domain == 'production' }}
+https://api.example.com
+{{ else }}
+http://localhost:8000
+{{ endif }}
+```
+
+## Authentication
+
+All endpoints require Bearer token authentication:
+
+```
+Authorization: Bearer <token>
+```
+
+## Endpoints
+
+### Users
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /users | List all users |
+| POST | /users | Create user |
+| GET | /users/{id} | Get user |
+| PUT | /users/{id} | Update user |
+| DELETE | /users/{id} | Delete user |
+
+### Resources
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /resources | List resources |
+| POST | /resources | Create resource |
+| GET | /resources/{id} | Get resource |
+
+## Response Format
+
+```json
+{
+  "data": {},
+  "meta": {
+    "page": 1,
+    "total": 100
+  }
+}
+```

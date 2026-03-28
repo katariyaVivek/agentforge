@@ -4,9 +4,13 @@ import json
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Any, List, Optional
 
 import typer
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from src.pipeline.compressor import CompressionPipeline, CompressedDocument
 from src.pipeline.intent_parser import IntentManifestParser
@@ -89,7 +93,8 @@ def generate(
                     typer.echo("Running search layer...")
 
                 search_pipeline = SearchPipeline(api_key=api_key)
-                search_results = search_pipeline.search_manifest(manifest)
+                manifest_dict = manifest.model_dump()
+                search_results = search_pipeline.search_manifest(manifest_dict)
 
                 if verbose:
                     typer.echo(f"Found {len(search_results)} search results")
