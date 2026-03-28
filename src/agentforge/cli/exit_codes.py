@@ -1,0 +1,7 @@
+class CLIErrors:
+    SUCCESS = 0
+    PARSE_ERROR = 1
+    SEARCH_ERROR = 2
+    COMPRESSION_ERROR = 3
+    GENERATION_ERROR = 4
+    IO_ERROR = 5
