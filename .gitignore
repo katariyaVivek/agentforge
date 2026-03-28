@@ -31,6 +31,7 @@ Thumbs.db
 # Project specific
 output/
 _debug.txt
+rough_plan.md
 
 # GSD Planning (internal workflow artifacts)
 .planning/
