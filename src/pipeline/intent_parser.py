@@ -12,6 +12,11 @@ try:
 except ImportError:
     ChatGoogleGenerativeAI = None
 
+try:
+    from langchain_groq import ChatGroq
+except ImportError:
+    ChatGroq = None
+
 from pydantic import BaseModel, Field
 
 
@@ -73,26 +78,41 @@ class IntentManifestParser:
         self._init_llm()
 
     def _init_llm(self) -> None:
-        """Initialize the LLM."""
-        api_key = os.getenv("GEMINI_API_KEY")
+        """Initialize the LLM with fallback chain."""
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        groq_key = os.getenv("GROQ_API_KEY")
 
-        if not api_key:
-            logger.warning("GEMINI_API_KEY not set, using test mode")
-            return
-
-        if ChatGoogleGenerativeAI:
+        # Try Gemini first
+        if gemini_key and ChatGoogleGenerativeAI:
             try:
                 self.llm = ChatGoogleGenerativeAI(
                     model=self.model_name,
-                    google_api_key=api_key,
+                    google_api_key=gemini_key,
                     temperature=0.3,
                     max_tokens=2048,
                     convert_system_message_to_human=True,
                 )
+                logger.info("Using Gemini LLM")
+                return
             except Exception as e:
                 logger.warning(f"Failed to initialize Gemini: {e}")
-        else:
-            logger.warning("langchain-google-genai not installed")
+
+        # Fallback to Groq
+        if groq_key and ChatGroq:
+            try:
+                self.llm = ChatGroq(
+                    model="llama-3.3-70b-versatile",
+                    groq_api_key=groq_key,
+                    temperature=0.3,
+                    max_tokens=2048,
+                )
+                logger.info("Using Groq LLM")
+                return
+            except Exception as e:
+                logger.warning(f"Failed to initialize Groq: {e}")
+
+        if not gemini_key and not groq_key:
+            logger.warning("No API keys set, using test mode")
 
     def parse_prompt(self, prompt: str) -> IntentManifest:
         """Parse a prompt and return structured manifest."""
